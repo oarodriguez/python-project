@@ -10,7 +10,7 @@ from pathlib import Path
 from subprocess import run
 from typing import List
 
-import typer
+import click
 
 from pyproject import __version__
 
@@ -91,7 +91,7 @@ def _run(command: List[str]):
     run(command)
 
 
-app = typer.Typer()
+app = click.Group("tasks")
 
 
 @app.command()
@@ -163,15 +163,24 @@ class DocFormat(str, Enum):
     HTML = "html"
 
 
-doc_format_spec = typer.Option(
-    default="html", help="Generated documentation format"
-)
+# Set HTML as the default document format.
+default_doc_format = DocFormat.HTML.name
+
+# List of allowed document formats.
+doc_formats = list(DocFormat.__members__.keys())
 
 
 @app.command()
-def build_docs(doc_format: DocFormat = doc_format_spec):
+@click.option(
+    "--doc-format",
+    type=click.Choice(doc_formats),
+    default=default_doc_format,
+    help=f"Generated documentation format. Defaults to {default_doc_format}.",
+)
+def build_docs(doc_format: str):
     """Build the documentation."""
-    BUILD_DOCS_ARGS.extend(["-b", doc_format])
+    doc_format_ = DocFormat[doc_format]
+    BUILD_DOCS_ARGS.extend(["-b", doc_format_])
     _run(BUILD_DOCS_ARGS)
 
 
@@ -182,13 +191,24 @@ class CleaningTask(str, Enum):
     DOCS = "docs"
 
 
-what_spec = typer.Argument(default=None, help="Cleaning task to perform")
+# Set DOCS as the default cleaning task.
+default_cleaning_task = CleaningTask.DOCS.name
+
+# List of allowed cleaning tasks.
+cleaning_tasks = list(CleaningTask.__members__.keys())
 
 
 @app.command()
-def clean(task: CleaningTask = what_spec):
+@click.option(
+    "--task",
+    type=click.Choice(cleaning_tasks),
+    default=default_cleaning_task,
+    help=f"Cleaning task to perform. Defaults to {default_cleaning_task}.",
+)
+def clean(task: str):
     """Clean any existing documentation."""
-    if task is None or task is CleaningTask.DOCS:
+    task_ = None if task is None else CleaningTask[task]
+    if task_ is None or task_ is CleaningTask.DOCS:
         shutil.rmtree(DOCS_BUILD_DIR, ignore_errors=True)
 
 

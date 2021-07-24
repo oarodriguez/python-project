@@ -34,55 +34,6 @@ SPHINX_BUILD_CMD = "sphinx-build"
 # Coverage report XML file.
 COVERAGE_XML = "coverage.xml"
 
-# Arguments to pass to subprocess.run for each task.
-BUILD_DOCS_ARGS = [
-    SPHINX_BUILD_CMD,
-    str(DOCS_SOURCE_DIR),
-    str(DOCS_BUILD_DIR),
-]
-FORMAT_ARGS = [
-    BLACK_CMD,
-    str(TASKS_FILE),
-    str(SRC_DIR),
-    str(TESTS_DIR),
-    str(DOCS_DIR),
-    str(NOTEBOOKS_DIR),
-]
-ISORT_ARGS = [
-    ISORT_CMD,
-    str(TASKS_FILE),
-    str(SRC_DIR),
-    str(TESTS_DIR),
-    str(NOTEBOOKS_DIR),
-]
-PYDOCSTYLE_ARGS = [
-    PYDOCSTYLE_CMD,
-    str(TASKS_FILE),
-    str(SRC_DIR),
-    str(TESTS_DIR),
-    # str(NOTEBOOKS_DIR),
-]
-FLAKE8_ARGS = [
-    FLAKE8_CMD,
-    str(TASKS_FILE),
-    str(SRC_DIR),
-    str(TESTS_DIR),
-    "--statistics",
-]
-PYTEST_ARGS = [
-    PYTEST_CMD,
-    "--cov",
-    "--cov-report",
-    "term-missing",
-    "--cov-report",
-    f"xml:./{COVERAGE_XML}",
-]
-MYPY_ARGS = [
-    MYPY_CMD,
-    str(TASKS_FILE),
-    str(SRC_DIR),
-]
-
 
 def _run(command: List[str]):
     """Run a subcommand through python subprocess.run routine."""
@@ -95,39 +46,17 @@ app = click.Group("tasks")
 
 
 @app.command()
-def black():
-    """Format the source code using black."""
-    _run(FORMAT_ARGS)
-
-
-@app.command()
-def isort():
-    """Format imports using isort."""
-    _run(ISORT_ARGS)
-
-
-@app.command()
-def pydocstyle():
-    """Run pydocstyle."""
-    _run(PYDOCSTYLE_ARGS)
-
-
-@app.command()
-def flake8():
-    """Run flake8 linter."""
-    _run(FLAKE8_ARGS)
-
-
-@app.command()
-def mypy():
-    """Run mypy."""
-    _run(MYPY_ARGS)
-
-
-@app.command()
 def tests():
     """Run test suite."""
-    _run(PYTEST_ARGS)
+    pytest_args = [
+        PYTEST_CMD,
+        "--cov",
+        "--cov-report",
+        "term-missing",
+        "--cov-report",
+        f"xml:./{COVERAGE_XML}",
+    ]
+    _run(pytest_args)
 
 
 @app.command()
@@ -138,22 +67,66 @@ def version():
 
 @app.command(name="format")
 def format_():
-    """Run all formatting tasks."""
-    _run(FORMAT_ARGS)
-    _run(ISORT_ARGS)
+    """Execute formatting tasks.
+
+    Format files using `black` together with `isort` to sort imports.
+    """
+    format_args = [
+        BLACK_CMD,
+        str(TASKS_FILE),
+        str(SRC_DIR),
+        str(TESTS_DIR),
+        str(DOCS_DIR),
+        str(NOTEBOOKS_DIR),
+    ]
+    isort_args = [
+        ISORT_CMD,
+        str(TASKS_FILE),
+        str(SRC_DIR),
+        str(TESTS_DIR),
+        str(NOTEBOOKS_DIR),
+    ]
+    _run(format_args)
+    _run(isort_args)
 
 
 @app.command()
 def typecheck():
-    """Run all typechecking tasks."""
-    _run(MYPY_ARGS)
+    """Execute typechecking tasks.
+
+    Execute `mypy` for static type checking.
+    """
+    mypy_args = [
+        MYPY_CMD,
+        str(TASKS_FILE),
+        str(SRC_DIR),
+    ]
+    _run(mypy_args)
 
 
 @app.command()
 def lint():
-    """Run all linting tasks."""
-    _run(PYDOCSTYLE_ARGS)
-    _run(FLAKE8_ARGS)
+    """Execute linting tasks.
+
+    Check code style issues using `flake8` and `pydocstyle` to
+    check docstrings.
+    """
+    pydocstyle_args = [
+        PYDOCSTYLE_CMD,
+        str(TASKS_FILE),
+        str(SRC_DIR),
+        str(TESTS_DIR),
+        # str(NOTEBOOKS_DIR),
+    ]
+    flake8_args = [
+        FLAKE8_CMD,
+        str(TASKS_FILE),
+        str(SRC_DIR),
+        str(TESTS_DIR),
+        "--statistics",
+    ]
+    _run(pydocstyle_args)
+    _run(flake8_args)
 
 
 @unique
@@ -179,9 +152,14 @@ doc_formats = list(DocFormat.__members__.keys())
 )
 def build_docs(doc_format: str):
     """Build the documentation."""
+    build_docs_args = [
+        SPHINX_BUILD_CMD,
+        str(DOCS_SOURCE_DIR),
+        str(DOCS_BUILD_DIR),
+    ]
     doc_format_ = DocFormat[doc_format]
-    BUILD_DOCS_ARGS.extend(["-b", doc_format_])
-    _run(BUILD_DOCS_ARGS)
+    build_docs_args.extend(["-b", doc_format_])
+    _run(build_docs_args)
 
 
 @unique
@@ -206,7 +184,7 @@ cleaning_tasks = list(CleaningTask.__members__.keys())
     help=f"Cleaning task to perform. Defaults to {default_cleaning_task}.",
 )
 def clean(task: str):
-    """Clean any existing documentation."""
+    """Clean project resources."""
     task_ = None if task is None else CleaningTask[task]
     if task_ is None or task_ is CleaningTask.DOCS:
         shutil.rmtree(DOCS_BUILD_DIR, ignore_errors=True)

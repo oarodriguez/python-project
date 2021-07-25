@@ -1,3 +1,4 @@
+"""Verify the library top-level functionality."""
 import pyproject
 
 

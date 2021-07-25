@@ -47,5 +47,3 @@ indent_size = 2
 [{*.zsh, *.bash, *.sh}]
 indent_size = 2
 tab_width = 2
-
-

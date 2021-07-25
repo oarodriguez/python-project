@@ -6,11 +6,11 @@ Versions follow [CalVer](https://calver.org).
 
 ### Added
 
-TODO.
+- Add development tasks to install, uninstall, and upgrade the project package.
 
 ### Changed
 
-TODO.
+- Use `click` to create the command line interfaces for development tasks.
 
 ### Deprecated
 
@@ -18,7 +18,7 @@ TODO.
 
 ### Removed
 
-TODO.
+- Remove redundant development tasks.
 
 ### Fixed
 

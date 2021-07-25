@@ -4,15 +4,16 @@ Collection of development tasks.
 Usage:
     python -m tasks TASK-NAME
 """
+import importlib
 import shutil
 from enum import Enum, unique
 from pathlib import Path
 from subprocess import run
+from types import ModuleType
 from typing import List
 
 import click
-
-from pyproject import __version__
+from click.exceptions import Exit
 
 PROJECT_DIR = Path(__file__).parent
 SRC_DIR = PROJECT_DIR / "src"
@@ -23,6 +24,9 @@ DOCS_BUILD_DIR = DOCS_DIR / "build"
 NOTEBOOKS_DIR = PROJECT_DIR / "notebooks"
 TASKS_FILE = PROJECT_DIR / "tasks.py"
 
+PYTHON_CMD = "python"
+POETRY_CMD = shutil.which("poetry")
+PIP_CMD = "pip"
 ISORT_CMD = "isort"
 BLACK_CMD = "black"
 PYDOCSTYLE_CMD = "pydocstyle"
@@ -39,10 +43,125 @@ def _run(command: List[str]):
     """Run a subcommand through python subprocess.run routine."""
     # NOTE: See https://stackoverflow.com/a/32799942 in case we want to
     #  remove shell=True.
-    run(command)
+    return run(command)
 
 
 app = click.Group("tasks")
+
+
+def _get_package_info():
+    """Return the package name and version from pyproject.toml."""
+    buffer = run(
+        [POETRY_CMD, "version"], capture_output=True, encoding="utf-8"
+    )
+    buffer_contents = buffer.stdout
+    name: str
+    version_: str
+    # In principle, the package name should have no spaces.
+    name, version_ = buffer_contents.split(" ")
+    return name.strip(), version_.strip()
+
+
+def _install():
+    """Install the current project package."""
+    install_args = [POETRY_CMD, "install"]
+    run(install_args)
+    print(f"Module installed successfully.")
+    verify_message = (
+        f"Check installed version through "
+        f""""python -m tasks version" command."""
+    )
+    print(verify_message)
+
+
+@app.command()
+def install():
+    """Install the current project package.
+
+    Do nothing if the package is already installed.
+    """
+    name, version_ = _get_package_info()
+    try:
+        package = importlib.import_module(name)
+        version_ = getattr(package, "__version__")
+        name = getattr(package, "__name__")
+        print(f"{name} {version_} is already installed.")
+    except ModuleNotFoundError:
+        _install()
+
+
+def _uninstall(package: ModuleType, yes: bool):
+    """Uninstall the current project package."""
+
+    pip_args = [PIP_CMD, "uninstall"]
+    if yes:
+        pip_args.append("--yes")
+    package_name = getattr(package, "__name__")
+    pip_args.append(package_name)
+    run(pip_args)
+
+
+@app.command()
+@click.option(
+    "-y",
+    "--yes",
+    is_flag=True,
+    default=False,
+    help="Do not ask for confirmation from pip to uninstall.",
+)
+def uninstall(yes: bool):
+    """Uninstall the current project packages.
+
+    Returns an error if the project package is not installed.
+    """
+    name, version_ = _get_package_info()
+    try:
+        package = importlib.import_module(name)
+    except ModuleNotFoundError:
+        raise click.ClickException(
+            f"The package '{name} {version_}' has not been installed."
+        )
+    else:
+        _uninstall(package, yes)
+        if yes:
+            print(f"Package '{name} {version_}' uninstalled successfully.")
+
+
+@app.command()
+@click.option(
+    "-y",
+    "--yes",
+    is_flag=True,
+    default=False,
+    help="Do not ask for confirmation from pip to uninstall and then upgrade.",
+)
+def upgrade(yes: bool):
+    """Upgrade the project package installation."""
+    name, new_version = _get_package_info()
+    try:
+        package = importlib.import_module(name)
+    except ModuleNotFoundError:
+        raise click.ClickException(
+            f"The package '{name} {new_version}' has not been installed."
+        )
+    else:
+        old_version = getattr(package, "__version__")
+        if old_version == new_version:
+            print("The installed project package is the last version.")
+            raise Exit()
+        _uninstall(package, yes)
+        if yes:
+            print(f"Package '{name} {new_version}' uninstalled successfully.")
+            _install()
+            print(f"Package '{name} {new_version}' installed successfully.")
+
+
+@app.command()
+def version():
+    """Project version."""
+    from pyproject import __version__
+
+    print(__version__)
 
 
 @app.command()
@@ -57,12 +176,6 @@ def tests():
         f"xml:./{COVERAGE_XML}",
     ]
     _run(pytest_args)
-
-
-@app.command()
-def version():
-    """Project version."""
-    print(__version__)
 
 
 @app.command(name="format")

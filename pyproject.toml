@@ -70,6 +70,10 @@ multi_line_output = 3
 line_length = 79
 src_paths = ["src"]
 
+[tool.pydocstyle]
+# Include all files, even tests.
+match = ".*\\.py"
+
 [tool.pytest.ini_options]
 addopts = "-s -vv -ra"
 testpaths = ["tests"]

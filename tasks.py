@@ -196,6 +196,7 @@ def format_():
         str(TASKS_FILE),
         str(SRC_DIR),
         str(TESTS_DIR),
+        str(DOCS_DIR),
         str(NOTEBOOKS_DIR),
     ]
     _run(format_args)
@@ -212,6 +213,9 @@ def typecheck():
         MYPY_CMD,
         str(TASKS_FILE),
         str(SRC_DIR),
+        str(TESTS_DIR),
+        # str(DOCS_DIR),
+        # str(NOTEBOOKS_DIR),
     ]
     _run(mypy_args)
 
@@ -228,13 +232,16 @@ def lint():
         str(TASKS_FILE),
         str(SRC_DIR),
         str(TESTS_DIR),
-        # str(NOTEBOOKS_DIR),
+        str(DOCS_DIR),
+        str(NOTEBOOKS_DIR),
     ]
     flake8_args = [
         FLAKE8_CMD,
         str(TASKS_FILE),
         str(SRC_DIR),
         str(TESTS_DIR),
+        str(DOCS_DIR),
+        str(NOTEBOOKS_DIR),
         "--statistics",
     ]
     _run(pydocstyle_args)

@@ -158,10 +158,10 @@ def upgrade(yes: bool):
 
 @app.command()
 def version():
-    """Project version."""
-    from pyproject import __version__
+    """Show the installed project version."""
+    import pyproject
 
-    print(__version__)
+    print(f"{pyproject.__name__} {pyproject.__version__}")
 
 
 @app.command()

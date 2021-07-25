@@ -110,7 +110,7 @@ def _uninstall(package: ModuleType, yes: bool):
     help="Do not ask for confirmation from pip to uninstall.",
 )
 def uninstall(yes: bool):
-    """Uninstall the current project packages.
+    """Uninstall the current project package.
 
     Returns an error if the project package is not installed.
     """

@@ -66,10 +66,10 @@ def _install():
     """Install the current project package."""
     install_args = [POETRY_CMD, "install"]
     run(install_args)
-    print(f"Module installed successfully.")
+    print("Module installed successfully.")
     verify_message = (
-        f"Check installed version through "
-        f""""python -m tasks version" command."""
+        "Check installed version through "
+        """"python -m tasks version" command."""
     )
     print(verify_message)
 
@@ -92,7 +92,6 @@ def install():
 
 def _uninstall(package: ModuleType, yes: bool):
     """Uninstall the current project package."""
-
     pip_args = [PIP_CMD, "uninstall"]
     if yes:
         pip_args.append("--yes")

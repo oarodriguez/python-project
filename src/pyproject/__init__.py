@@ -8,7 +8,7 @@ try:
 except ModuleNotFoundError:
     import importlib_metadata  # type: ignore
 
-_metadata = importlib_metadata.metadata("pyproject")  # type: ignore
+_metadata = importlib_metadata.metadata(__name__)  # type: ignore
 
 # Export package information.
 __version__ = _metadata["version"]

@@ -17,7 +17,7 @@ import pyproject
 
 # -- Project information -----------------------------------------------------
 
-project = pyproject.__name__
+project = pyproject.metadata["name"]
 copyright = f"2021, {pyproject.__author__}"
 author = f"{pyproject.__author__}"
 

@@ -4,12 +4,10 @@ Collection of development tasks.
 Usage:
     python -m tasks TASK-NAME
 """
-import importlib
 import shutil
 from enum import Enum, unique
 from pathlib import Path
 from subprocess import run
-from types import ModuleType
 from typing import List
 
 import click
@@ -80,22 +78,21 @@ def install():
 
     Do nothing if the package is already installed.
     """
-    name, version_ = _get_package_info()
     try:
-        package = importlib.import_module(name)
-        version_ = getattr(package, "__version__")
-        name = getattr(package, "__name__")
+        import pyproject
+
+        name = pyproject.metadata["name"]
+        version_ = pyproject.__version__
         print(f"{name} {version_} is already installed.")
     except ModuleNotFoundError:
         _install()
 
 
-def _uninstall(package: ModuleType, yes: bool):
+def _uninstall(package_name: str, yes: bool):
     """Uninstall the current project package."""
     pip_args = [PIP_CMD, "uninstall"]
     if yes:
         pip_args.append("--yes")
-    package_name = getattr(package, "__name__")
     pip_args.append(package_name)
     run(pip_args)
 
@@ -113,15 +110,17 @@ def uninstall(yes: bool):
 
     Returns an error if the project package is not installed.
     """
-    name, version_ = _get_package_info()
     try:
-        package = importlib.import_module(name)
+        import pyproject
     except ModuleNotFoundError:
+        name, version_ = _get_package_info()
         raise click.ClickException(
             f"The package '{name} {version_}' has not been installed."
         )
     else:
-        _uninstall(package, yes)
+        name = pyproject.metadata["name"]
+        version_ = pyproject.__version__
+        _uninstall(name, yes)
         if yes:
             print(f"Package '{name} {version_}' uninstalled successfully.")
 
@@ -136,21 +135,22 @@ def uninstall(yes: bool):
 )
 def upgrade(yes: bool):
     """Upgrade the project package installation."""
-    name, new_version = _get_package_info()
     try:
-        package = importlib.import_module(name)
+        import pyproject
     except ModuleNotFoundError:
+        name, new_version = _get_package_info()
         raise click.ClickException(
             f"The package '{name} {new_version}' has not been installed."
         )
     else:
-        old_version = getattr(package, "__version__")
+        name, new_version = _get_package_info()
+        old_version = pyproject.__version__
         if old_version == new_version:
-            print("The installed project package is the last version.")
+            print("The installed project package is the latest.")
             raise Exit()
-        _uninstall(package, yes)
+        _uninstall(name, yes)
         if yes:
-            print(f"Package '{name} {new_version}' uninstalled successfully.")
+            print(f"Package '{name} {old_version}' uninstalled successfully.")
             _install()
             print(f"Package '{name} {new_version}' installed successfully.")
 
@@ -160,7 +160,7 @@ def version():
     """Show the installed project version."""
     import pyproject
 
-    print(f"{pyproject.__name__} {pyproject.__version__}")
+    print(f"{pyproject.metadata['name']} {pyproject.__version__}")
 
 
 @app.command()

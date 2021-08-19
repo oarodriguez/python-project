@@ -2,7 +2,7 @@
 
 Versions follow [CalVer](https://calver.org).
 
-## 2021.2.0 (Not yet released)
+## 2021.2.0 (2021-08-19)
 
 ### Added
 
@@ -19,10 +19,6 @@ Versions follow [CalVer](https://calver.org).
   stating the project name in the code.
 - Make the package metadata a public name of the project package.
 - Use `click` to create the command line interfaces for development tasks.
-
-### Deprecated
-
-TODO.
 
 ### Removed
 

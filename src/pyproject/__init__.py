@@ -9,7 +9,7 @@ try:
 except ModuleNotFoundError:  # pragma: no cover
     import importlib_metadata  # type: ignore
 
-metadata = importlib_metadata.metadata(__name__)  # type: ignore
+metadata = importlib_metadata.metadata("pyproject")  # type: ignore
 
 # Export package information.
 __version__ = metadata["version"]

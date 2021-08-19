@@ -14,10 +14,10 @@ Versions follow [CalVer](https://calver.org).
 
 ### Changed
 
+- Do not force the project package name to be the same as the project name in
+  the `src/pyproject/__init__.py`. We must recover the package metadata
+  stating the project name in the code.
 - Make the package metadata a public name of the project package.
-- In the package entry file, `src/pyproject/__init__.py`, the `__name__`
-  variable must match the name set in the `tool.poetry` section of the
-  `pyproject.toml` file.
 - Use `click` to create the command line interfaces for development tasks.
 
 ### Deprecated

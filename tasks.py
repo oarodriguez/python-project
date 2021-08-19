@@ -109,7 +109,6 @@ def uninstall():
 @app.command()
 def upgrade():
     """Upgrade the project package installation."""
-    # TODO: Fix uninstall and upgrade procedures.
     name, new_version = _get_package_info()
     try:
         name, old_version = _get_installed_package_info()

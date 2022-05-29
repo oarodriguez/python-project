@@ -6,7 +6,9 @@ Versions follow [CalVer](https://calver.org).
 
 ### Added
 
-TODO.
+- Upgrade dependencies, i.e., `poetry.lock` file.
+- Update the minimum Python version to `3.8` and the maximum to `3.10` (
+  inclusive).
 
 ### Changed
 

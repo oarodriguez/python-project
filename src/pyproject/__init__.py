@@ -3,13 +3,9 @@
 Copyright © 2021, Omar Abel Rodríguez-López.
 """
 
-# See https://github.com/python-poetry/poetry/pull/2366#issuecomment-652418094
-try:
-    import importlib.metadata as importlib_metadata
-except ModuleNotFoundError:  # pragma: no cover
-    import importlib_metadata  # type: ignore
+import importlib.metadata as importlib_metadata
 
-metadata = importlib_metadata.metadata("pyproject")  # type: ignore
+metadata = importlib_metadata.metadata("pyproject")
 
 # Export package information.
 __version__ = metadata["version"]

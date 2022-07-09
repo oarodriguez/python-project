@@ -6,6 +6,7 @@ Versions follow [CalVer](https://calver.org).
 
 ### Added
 
+- Update the target Python versions when applying `black`.
 - Add a pre-commit hook and config file to use the `mdformat` library.
 - Add a new extra collection of the package: `jupyter-enhancements`.
 - Upgrade dependencies, i.e., `poetry.lock` file.

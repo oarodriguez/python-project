@@ -6,6 +6,8 @@ Versions follow [CalVer](https://calver.org).
 
 ### Added
 
+- Create a new task to launch a Jupyter lab server with some additional directories as part of the
+  system environment variables.
 - Update the target Python versions when applying `black`.
 - Add a pre-commit hook and config file to use the `mdformat` library.
 - Add a new extra collection of the package: `jupyter-enhancements`.

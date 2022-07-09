@@ -4,6 +4,7 @@ Collection of development tasks.
 Usage:
     python -m tasks TASK-NAME
 """
+import os
 import shutil
 from enum import Enum, unique
 from pathlib import Path
@@ -19,11 +20,14 @@ TESTS_DIR = PROJECT_DIR / "tests"
 DOCS_DIR = PROJECT_DIR / "docs"
 DOCS_SOURCE_DIR = DOCS_DIR / "source"
 DOCS_BUILD_DIR = DOCS_DIR / "build"
+DATA_DIR = PROJECT_DIR / "data"
 NOTEBOOKS_DIR = PROJECT_DIR / "notebooks"
+SCRIPTS_DIR = PROJECT_DIR / "scripts"
 TASKS_FILE = PROJECT_DIR / "tasks.py"
 
 PYTHON_CMD = "python"
 POETRY_CMD = shutil.which("poetry")
+JUPYTER_CMD = shutil.which("jupyter")
 PIP_CMD = "pip"
 ISORT_CMD = "isort"
 BLACK_CMD = "black"
@@ -285,6 +289,25 @@ def clean(task: str):
     task_ = None if task is None else CleaningTask[task]
     if task_ is None or task_ is CleaningTask.DOCS:
         shutil.rmtree(DOCS_BUILD_DIR, ignore_errors=True)
+
+
+@app.command()
+def jupyter_lab():
+    """Execute a jupyter lab server instance in the current directory."""
+    environ = {}
+    environ.update(os.environ)
+    # Set project environment variables.
+    environ["DATA_DIR"] = str(DATA_DIR)
+    environ["NOTEBOOKS_DIR"] = str(NOTEBOOKS_DIR)
+    environ["SCRIPTS_DIR"] = str(SCRIPTS_DIR)
+    if JUPYTER_CMD is None:
+        raise click.ClickException("'jupyter' library is not installed")
+    jupyter_lab_args = [
+        JUPYTER_CMD,
+        "lab",
+        "--no-browser",
+    ]
+    run(jupyter_lab_args, env=environ)
 
 
 if __name__ == "__main__":

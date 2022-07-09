@@ -6,13 +6,13 @@ Versions follow [CalVer](https://calver.org).
 
 ### Added
 
+- Add a pre-commit hook and config file to use the `mdformat` library.
 - Add a new extra collection of the package: `jupyter-enhancements`.
 - Upgrade dependencies, i.e., `poetry.lock` file.
 
 ### Changed
 
-- Update the minimum Python version to `3.8` and the maximum to `3.10` (
-  inclusive).
+- Update the minimum Python version to `3.8` and the maximum to `3.10` (inclusive).
 
 ### Deprecated
 
@@ -26,7 +26,7 @@ TODO.
 
 TODO.
 
----
+______________________________________________________________________
 
 ## 2021.2.0 (2021-08-19)
 
@@ -40,9 +40,9 @@ TODO.
 
 ### Changed
 
-- Do not force the project package name to be the same as the project name in
-  the `src/pyproject/__init__.py`. We must recover the package metadata
-  stating the project name in the code.
+- Do not force the project package name to be the same as the project name in the
+  `src/pyproject/__init__.py`. We must recover the package metadata stating the project name in the
+  code.
 - Make the package metadata a public name of the project package.
 - Use `click` to create the command line interfaces for development tasks.
 
@@ -54,7 +54,7 @@ TODO.
 
 - Fix tasks to install, uninstall, and upgrade the project package.
 
----
+______________________________________________________________________
 
 ## 21.1.0 (2021-07-24)
 

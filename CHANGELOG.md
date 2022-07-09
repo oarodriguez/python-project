@@ -6,6 +6,7 @@ Versions follow [CalVer](https://calver.org).
 
 ### Added
 
+- Add a new extra collection of the package: `jupyter-enhancements`.
 - Upgrade dependencies, i.e., `poetry.lock` file.
 
 ### Changed

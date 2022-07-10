@@ -6,6 +6,8 @@ Versions follow [CalVer](https://calver.org).
 
 ### Added
 
+- Add support to use the Python Language Server to enhance the development experience with Jupyter
+  notebooks.
 - Create a new task to launch a Jupyter lab server with some additional directories as part of the
   system environment variables.
 - Update the target Python versions when applying `black`.

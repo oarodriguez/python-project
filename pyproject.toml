@@ -44,6 +44,11 @@ jupyter = { version = ">=1.0.0", optional = true }
 jupyterlab = { version = ">=3.0.12", optional = true }
 jupyterlab-code-formatter = { version = ">=1.4.5", optional = true }
 jupytext = { version = ">=1.11.1", optional = true }
+# First, install python-lsp-server, and next, install jupyterlab-lsp.
+# This installation order may remedy issues while installing these
+# dependencies with Poetry.
+python-lsp-server = { version = ">=1.4.1", optional = true }
+jupyterlab-lsp = { version = ">=3.10.1", optional = true }
 
 [tool.poetry.dev-dependencies]
 pytest = ">=6.2.2"
@@ -63,6 +68,7 @@ rope = ">=0.19.0"
 [tool.poetry.extras]
 jupyter = ["jupyter", "jupyterlab"]
 jupyter-enhancements = ["jupyterlab-code-formatter", "jupytext"]
+jupyterlab-lsp = ["jupyterlab-lsp", "jupyterlab-lsp"]
 
 [tool.black]
 line-length = 79

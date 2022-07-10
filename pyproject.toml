@@ -64,6 +64,7 @@ coverage = ">=5.5"
 pytest-cov = ">=2.12.0"
 pre-commit = ">=2.13.0"
 rope = ">=0.19.0"
+mdformat = ">=0.7.14"
 
 [tool.poetry.extras]
 jupyter = ["jupyter", "jupyterlab"]

@@ -6,6 +6,7 @@ Versions follow [CalVer](https://calver.org).
 
 ### Added
 
+- Add task `format-docs` to format documentation source files in markdown format.
 - Add support to use the Python Language Server to enhance the development experience with Jupyter
   notebooks.
 - Create a new task to launch a Jupyter lab server with some additional directories as part of the

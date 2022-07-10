@@ -24,6 +24,8 @@ DATA_DIR = PROJECT_DIR / "data"
 NOTEBOOKS_DIR = PROJECT_DIR / "notebooks"
 SCRIPTS_DIR = PROJECT_DIR / "scripts"
 TASKS_FILE = PROJECT_DIR / "tasks.py"
+README_FILE = PROJECT_DIR / "README.md"
+CHANGELOG_FILE = PROJECT_DIR / "CHANGELOG.md"
 
 PYTHON_CMD = "python"
 POETRY_CMD = shutil.which("poetry")
@@ -31,6 +33,7 @@ JUPYTER_CMD = shutil.which("jupyter")
 PIP_CMD = "pip"
 ISORT_CMD = "isort"
 BLACK_CMD = "black"
+MDFORMAT_CMD = shutil.which("mdformat")
 PYDOCSTYLE_CMD = "pydocstyle"
 FLAKE8_CMD = "flake8"
 MYPY_CMD = "mypy"
@@ -183,6 +186,23 @@ def format_():
     ]
     _run(format_args)
     _run(isort_args)
+
+
+@app.command()
+def format_docs():
+    """Execute formatting tasks for markdown files.
+
+    Format markdown files using the `mdformat` library.
+    """
+    format_args = [
+        MDFORMAT_CMD,
+        str(SRC_DIR),
+        str(DOCS_DIR),
+        str(NOTEBOOKS_DIR),
+        str(README_FILE),
+        str(CHANGELOG_FILE),
+    ]
+    return run(format_args).returncode
 
 
 @app.command()

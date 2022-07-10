@@ -6,6 +6,7 @@ Versions follow [CalVer](https://calver.org).
 
 ### Added
 
+- Update the GitHub action that executes the package tests.
 - Add task `format-docs` to format documentation source files in markdown format.
 - Add support to use the Python Language Server to enhance the development experience with Jupyter
   notebooks.

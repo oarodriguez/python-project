@@ -1,13 +1,14 @@
 # Changelog
 
-Versions follow [CalVer](https://calver.org).
+Versions follow [CalVer](https://calver.org). This changelog follows the style guides described on
+[https://keepachangelog.com/en/1.0.0/](https://keepachangelog.com/en/1.0.0/)
 
 ## 2023.1.0.dev0 (Not yet released)
 
 ### Added
 
 - Update the GitHub action that executes the package tests.
-- Add task `format-docs` to format documentation source files in markdown format.
+- Add task `format-docs` to format documentation source files in Markdown format.
 - Add support to use the Python Language Server to enhance the development experience with Jupyter
   notebooks.
 - Create a new task to launch a Jupyter lab server with some additional directories as part of the

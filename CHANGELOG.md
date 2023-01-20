@@ -2,7 +2,7 @@
 
 Versions follow [CalVer](https://calver.org).
 
-## 2021.3.0.dev0 (Not yet released)
+## 2023.1.0.dev0 (Not yet released)
 
 ### Added
 

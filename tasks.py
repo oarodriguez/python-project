@@ -52,6 +52,8 @@ def _get_package_info():
     buffer = run(
         [POETRY_CMD, "version"], capture_output=True, encoding="utf-8"
     )
+    if rc := buffer.returncode:
+        raise Exit(rc)
     buffer_contents = buffer.stdout
     name: str
     version_: str
@@ -77,7 +79,8 @@ def install():
         name, version_ = _get_installed_package_info()
     except ModuleNotFoundError:
         install_args = [POETRY_CMD, "install"]
-        run(install_args)
+        if rc := run(install_args).returncode:
+            raise Exit(rc)
         print("Module installed successfully.")
         verify_message = (
             "Check installed version through "
@@ -85,7 +88,7 @@ def install():
         )
         print(verify_message)
     else:
-        print(f"{name} {version_} is already installed.")
+        raise click.ClickException(f"{name} {version_} is already installed.")
 
 
 @app.command()
@@ -97,7 +100,8 @@ def uninstall():
     try:
         name, version_ = _get_installed_package_info()
         pip_args = [PIP_CMD, "uninstall", "--yes", name]
-        run(pip_args)
+        if rc := run(pip_args).returncode:
+            raise Exit(rc)
         print(f"Package '{name} {version_}' uninstalled successfully.")
     except ModuleNotFoundError:
         name, version_ = _get_package_info()
@@ -114,9 +118,10 @@ def upgrade():
         name, old_version = _get_installed_package_info()
         if old_version == new_version:
             print("The installed project package is the latest.")
-            raise Exit()
+            raise Exit(1)
         pip_args = [PIP_CMD, "uninstall", "--yes", name]
-        run(pip_args)
+        if rc := run(pip_args).returncode:
+            raise Exit(rc)
         print(f"Package '{name} {old_version}' uninstalled successfully.")
     except ModuleNotFoundError:
         raise click.ClickException(
@@ -124,7 +129,8 @@ def upgrade():
         )
 
     install_args = [POETRY_CMD, "install"]
-    run(install_args)
+    if rc := run(install_args).returncode:
+        raise Exit(rc)
     print("Package upgraded successfully.")
     verify_message = (
         "Check installed version through "
@@ -136,9 +142,14 @@ def upgrade():
 @app.command()
 def version():
     """Show the installed project version."""
-    import pyproject
+    try:
+        import pyproject
 
-    print(f"{pyproject.metadata['name']} {pyproject.__version__}")
+        print(f"{pyproject.metadata['name']} {pyproject.__version__}")
+    except ModuleNotFoundError:
+        raise click.ClickException(
+            "The package 'pyproject' has not been installed."
+        )
 
 
 @app.command()
@@ -152,7 +163,7 @@ def tests():
         "--cov-report",
         f"xml:./{COVERAGE_XML}",
     ]
-    run(pytest_args)
+    raise Exit(run(pytest_args).returncode)
 
 
 @app.command(name="format")
@@ -169,6 +180,9 @@ def format_():
         str(DOCS_DIR),
         str(NOTEBOOKS_DIR),
     ]
+    if rc := run(format_args).returncode:
+        raise Exit(rc)
+
     isort_args = [
         ISORT_CMD,
         str(TASKS_FILE),
@@ -177,8 +191,8 @@ def format_():
         str(DOCS_DIR),
         str(NOTEBOOKS_DIR),
     ]
-    run(format_args)
-    run(isort_args)
+    if rc := run(isort_args).returncode:
+        raise Exit(rc)
 
 
 @app.command()
@@ -195,7 +209,7 @@ def format_docs():
         str(README_FILE),
         str(CHANGELOG_FILE),
     ]
-    return run(format_args).returncode
+    raise Exit(run(format_args).returncode)
 
 
 @app.command()
@@ -212,7 +226,7 @@ def typecheck():
         # str(DOCS_DIR),
         # str(NOTEBOOKS_DIR),
     ]
-    run(mypy_args)
+    raise Exit(run(mypy_args).returncode)
 
 
 @app.command()
@@ -230,6 +244,9 @@ def lint():
         str(DOCS_DIR),
         str(NOTEBOOKS_DIR),
     ]
+    if rc := run(pydocstyle_args).returncode:
+        raise Exit(rc)
+
     flake8_args = [
         FLAKE8_CMD,
         str(TASKS_FILE),
@@ -239,8 +256,8 @@ def lint():
         str(NOTEBOOKS_DIR),
         "--statistics",
     ]
-    run(pydocstyle_args)
-    run(flake8_args)
+    if rc := run(flake8_args).returncode:
+        raise Exit(rc)
 
 
 @unique
@@ -273,7 +290,7 @@ def build_docs(doc_format: str):
     ]
     doc_format_ = DocFormat[doc_format]
     build_docs_args.extend(["-b", doc_format_])
-    run(build_docs_args)
+    raise Exit(run(build_docs_args).returncode)
 
 
 @unique
@@ -299,9 +316,12 @@ cleaning_tasks = list(CleaningTask.__members__.keys())
 )
 def clean(task: str):
     """Clean project resources."""
-    task_ = None if task is None else CleaningTask[task]
-    if task_ is None or task_ is CleaningTask.DOCS:
-        shutil.rmtree(DOCS_BUILD_DIR, ignore_errors=True)
+    try:
+        task_ = None if task is None else CleaningTask[task]
+        if task_ is None or task_ is CleaningTask.DOCS:
+            shutil.rmtree(DOCS_BUILD_DIR)
+    except Exception:
+        raise Exit(1)
 
 
 @app.command()
@@ -320,7 +340,7 @@ def jupyter_lab():
         "lab",
         "--no-browser",
     ]
-    run(jupyter_lab_args, env=environ)
+    raise Exit(run(jupyter_lab_args, env=environ).returncode)
 
 
 if __name__ == "__main__":

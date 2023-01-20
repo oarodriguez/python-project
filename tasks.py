@@ -9,7 +9,6 @@ import shutil
 from enum import Enum, unique
 from pathlib import Path
 from subprocess import run
-from typing import List
 
 import click
 from click.exceptions import Exit
@@ -27,6 +26,8 @@ TASKS_FILE = PROJECT_DIR / "tasks.py"
 README_FILE = PROJECT_DIR / "README.md"
 CHANGELOG_FILE = PROJECT_DIR / "CHANGELOG.md"
 
+# NOTE: See https://stackoverflow.com/a/32799942 to understand why we use
+# shutil.which().
 PYTHON_CMD = "python"
 POETRY_CMD = shutil.which("poetry")
 JUPYTER_CMD = shutil.which("jupyter")
@@ -42,14 +43,6 @@ SPHINX_BUILD_CMD = "sphinx-build"
 
 # Coverage report XML file.
 COVERAGE_XML = "coverage.xml"
-
-
-def _run(command: List[str]):
-    """Run a subcommand through python subprocess.run routine."""
-    # NOTE: See https://stackoverflow.com/a/32799942 in case we want to
-    #  remove shell=True.
-    return run(command)
-
 
 app = click.Group("tasks")
 
@@ -159,7 +152,7 @@ def tests():
         "--cov-report",
         f"xml:./{COVERAGE_XML}",
     ]
-    _run(pytest_args)
+    run(pytest_args)
 
 
 @app.command(name="format")
@@ -184,8 +177,8 @@ def format_():
         str(DOCS_DIR),
         str(NOTEBOOKS_DIR),
     ]
-    _run(format_args)
-    _run(isort_args)
+    run(format_args)
+    run(isort_args)
 
 
 @app.command()
@@ -219,7 +212,7 @@ def typecheck():
         # str(DOCS_DIR),
         # str(NOTEBOOKS_DIR),
     ]
-    _run(mypy_args)
+    run(mypy_args)
 
 
 @app.command()
@@ -246,8 +239,8 @@ def lint():
         str(NOTEBOOKS_DIR),
         "--statistics",
     ]
-    _run(pydocstyle_args)
-    _run(flake8_args)
+    run(pydocstyle_args)
+    run(flake8_args)
 
 
 @unique
@@ -280,7 +273,7 @@ def build_docs(doc_format: str):
     ]
     doc_format_ = DocFormat[doc_format]
     build_docs_args.extend(["-b", doc_format_])
-    _run(build_docs_args)
+    run(build_docs_args)
 
 
 @unique

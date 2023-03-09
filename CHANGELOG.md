@@ -3,10 +3,12 @@
 Versions follow [CalVer](https://calver.org). This changelog follows the style guides described on
 [https://keepachangelog.com/en/1.0.0/](https://keepachangelog.com/en/1.0.0/)
 
-## 2023.1.0.dev0 (Not yet released)
+## 23.3.0 (2023-03-10)
 
 ### Added
 
+- Use two-digits to indicate the year in the project version number.
+- Fix the exit codes returned by the CLI when invoking the development tasks.
 - Update the GitHub action that executes the package tests.
 - Add task `format-docs` to format documentation source files in Markdown format.
 - Add support to use the Python Language Server to enhance the development experience with Jupyter
@@ -21,18 +23,6 @@ Versions follow [CalVer](https://calver.org). This changelog follows the style g
 ### Changed
 
 - Update the minimum Python version to `3.8` and the maximum to `3.10` (inclusive).
-
-### Deprecated
-
-TODO.
-
-### Removed
-
-TODO.
-
-### Fixed
-
-TODO.
 
 ______________________________________________________________________
 

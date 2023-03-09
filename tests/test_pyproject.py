@@ -4,4 +4,4 @@ import pyproject
 
 def test_version():
     """Verify we have updated the package version."""
-    assert pyproject.__version__ == "2023.1.0.dev0"
+    assert pyproject.__version__ == "23.3.0"

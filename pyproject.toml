@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyproject"
-version = "23.3.0"
+version = "23.3.1.dev0"
 description = "A template for your Python project. It uses Poetry as a dependency manager and Apache 2.0 as its license."
 license = "Apache-2.0"
 authors = [

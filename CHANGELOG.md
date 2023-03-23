@@ -7,6 +7,7 @@ Versions follow [CalVer](https://calver.org). This changelog follows the style g
 
 ### Changed
 
+- Update the format used to indicate the development dependencies in the `pyproject.toml` file.
 - Update our `pre-commit` hooks.
 - Update the `poetry.lock` file so its format is compatible with Poetry `1.3.0` and greater.
 

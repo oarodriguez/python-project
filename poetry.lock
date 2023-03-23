@@ -2910,4 +2910,4 @@ jupyterlab-lsp = ["jupyterlab-lsp", "jupyterlab-lsp"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1,<3.11"
-content-hash = "ac34261bef92dff60c67389211adf7bd5cdae16b31c8c2724e66cacd60ec4d44"
+content-hash = "5ebad28e951945cb7c7ca1fea48948f98e064c7058e9ca9d51e8b794c07c2233"

@@ -7,6 +7,7 @@ Versions follow [CalVer](https://calver.org). This changelog follows the style g
 
 ### Changed
 
+- Update our `pre-commit` hooks.
 - Update the `poetry.lock` file so its format is compatible with Poetry `1.3.0` and greater.
 
 ______________________________________________________________________
